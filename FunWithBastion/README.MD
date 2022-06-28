@@ -5,7 +5,7 @@ The hub vNet will include Bastion, which can then be used to remote into the VMs
 
 ![Beatiful drawing](./FunWithBastion.png)
 
-To deploy it in a resource group named rg-FunWithBastion, you can do it like this:
+To deploy it in a resource group named rg-FunWithBastion, you can do it like this (assuming you have Bicep installed):
 ```
 New-AzResourceGroupDeployment -Name BastionTest -ResourceGroupName rg-FunWithBastion -TemplateFile .\FunWithBastion\main.bicep
 ```
