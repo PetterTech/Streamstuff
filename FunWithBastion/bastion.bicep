@@ -16,6 +16,9 @@ resource BastionpublicIPAddress 'Microsoft.Network/publicIPAddresses@2019-11-01'
 resource Bastion 'Microsoft.Network/bastionHosts@2021-08-01' = {
   name: 'FunWithBastion-bastion'
   location: location
+  sku: {
+    name: 'Basic'
+  }
   properties: {
     disableCopyPaste: false
     ipConfigurations: [
