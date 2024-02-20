@@ -2,9 +2,10 @@ param location string
 param hubVnetID string
 param spokeVnetID string
 param spokeSubnetID string
+param storageAccountName string
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
-  name: 'pettertechstoragetest'
+  name: storageAccountName
   location: location
   sku: {
     name: 'Standard_LRS'

@@ -4,6 +4,7 @@ param location string = 'norwayeast'
 param localAdminUsername string = 'pettertech'
 @secure()
 param localAdminPassword string = 'LongAndStrongP@ssw0rd1234'
+param storageAccountName string = 'pt${uniqueString(resourceGroup().id)}'
 
 module hubvnet './hubvnet.bicep' = {
   name: 'hubvnet'
@@ -71,5 +72,6 @@ module storage 'storage.bicep' = {
     hubVnetID: hubvnet.outputs.vnetID
     spokeVnetID: spokevnet.outputs.vnetID
     spokeSubnetID: spokevnet.outputs.spokesubnetID
+    storageAccountName: storageAccountName
   }
 }
