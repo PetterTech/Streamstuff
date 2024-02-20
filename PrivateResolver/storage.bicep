@@ -52,12 +52,12 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
 }
 
 resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'privatelink.${environment().suffixes.storage}'
+  name: 'privatelink.file.${environment().suffixes.storage}'
   location: 'global'
 }
 
 resource privateDNSZoneLinkToHub 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  name: 'privatelink.${environment().suffixes.storage}-linkToHub'
+  name: 'privatelink.file.${environment().suffixes.storage}-linkToHub'
   parent: privateDNSZone
   location: 'global'
   properties: {
@@ -69,7 +69,7 @@ resource privateDNSZoneLinkToHub 'Microsoft.Network/privateDnsZones/virtualNetwo
 }
 
 resource privateDNSZoneLinkToSpoke 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  name: 'privatelink.${environment().suffixes.storage}-linkToSpoke'
+  name: 'privatelink.file.${environment().suffixes.storage}-linkToSpoke'
   parent: privateDNSZone
   location: 'global'
   properties: {

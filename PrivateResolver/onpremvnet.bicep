@@ -19,7 +19,8 @@ resource onpremvnet 'Microsoft.Network/virtualNetworks@2023-09-01' = {
     ]
     dhcpOptions: {
       dnsServers: [
-        '10.200.0.70'
+        '10.100.0.5'
+        '1.1.1.1'
       ]
     }
   }

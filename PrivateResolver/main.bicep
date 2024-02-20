@@ -55,16 +55,6 @@ module bastion 'bastion.bicep' = {
   }
 }
 
-module privateresolver 'privateresolver.bicep' = {
-  name: 'privateresolver'
-  params: {
-    location: location
-    hubvnetID: hubvnet.outputs.vnetID
-    inboundSubnetID: hubvnet.outputs.inboundSubnetID
-    outboundSubnetID: hubvnet.outputs.outboundSubnetID
-  }
-}
-
 module storage 'storage.bicep' = {
   name: 'storage'
   params: {
@@ -73,5 +63,15 @@ module storage 'storage.bicep' = {
     spokeVnetID: spokevnet.outputs.vnetID
     spokeSubnetID: spokevnet.outputs.spokesubnetID
     storageAccountName: storageAccountName
+  }
+}
+
+module privateresolver 'privateresolver.bicep' = {
+  name: 'privateresolver'
+  params: {
+    location: location
+    hubvnetID: hubvnet.outputs.vnetID
+    inboundSubnetID: hubvnet.outputs.inboundSubnetID
+    outboundSubnetID: hubvnet.outputs.outboundSubnetID
   }
 }

@@ -40,3 +40,29 @@ resource outboundEndpoint 'Microsoft.Network/dnsResolvers/outboundEndpoints@2022
     }
   }
 }
+
+resource LabzoneRuleset 'Microsoft.Network/dnsForwardingRulesets@2022-07-01' = {
+  name: 'LabzoneRuleset'
+  location: location
+  properties: {
+    dnsResolverOutboundEndpoints: [
+      {
+        id: outboundEndpoint.id
+      }
+    ]
+  }
+}
+
+resource LabzoneForwarding 'Microsoft.Network/dnsForwardingRulesets/forwardingRules@2022-07-01' = {
+  name: 'LabzoneForwarding'
+  parent: LabzoneRuleset
+  properties: {
+    domainName: 'labzone.local.'
+    targetDnsServers: [
+       {
+        ipAddress: '10.100.0.5'
+        port: 53
+       }
+    ]
+  }
+}

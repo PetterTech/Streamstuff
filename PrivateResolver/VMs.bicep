@@ -13,7 +13,8 @@ resource OnPremVMNic 'Microsoft.Network/networkInterfaces@2023-09-01' = {
       {
         name: 'ipconfig1'
         properties: {
-          privateIPAllocationMethod: 'Dynamic'
+          privateIPAllocationMethod: 'Static'
+          privateIPAddress: '10.100.0.5'
           subnet: {
             id: onpremsubnetID
           }
@@ -50,9 +51,9 @@ resource OnPremVM 'Microsoft.Compute/virtualMachines@2023-09-01' = {
     }
     storageProfile: {
       imageReference: {
-        publisher: 'MicrosoftWindowsDesktop'
-        offer: 'windows-11'
-        sku: 'win11-23h2-ent'
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2022-datacenter'
         version: 'latest'
       }
       osDisk: {
@@ -73,10 +74,53 @@ resource OnPremVM 'Microsoft.Compute/virtualMachines@2023-09-01' = {
           id: OnPremVMNic.id
         }
       ]
+    }
+    diagnosticsProfile: {
+      bootDiagnostics: {
+        enabled: true
+      }
     }    
   }
 }
 
+resource installDNSRole 'Microsoft.Compute/virtualMachines/runCommands@2023-09-01' = {
+  name: 'installDNSRole'
+  location: location
+  parent: OnPremVM
+  properties: {
+    source: {
+      script: 'Add-WindowsFeature -Name DNS -IncludeManagementTools'
+    }
+  }
+}
+
+resource createForwardDNSZone 'Microsoft.Compute/virtualMachines/runCommands@2023-09-01' = {
+  name: 'createForwardDNSZone'
+  location: location
+  parent: OnPremVM
+  dependsOn: [
+    installDNSRole
+  ]
+  properties: {
+    source: {
+      script: 'Add-DnsServerPrimaryZone -Name "labzone.local" -ZoneFile "labzone.local.dns"'
+    }
+  }
+}
+
+resource createDNSRecords 'Microsoft.Compute/virtualMachines/runCommands@2023-09-01' = {
+  name: 'createDNSRecords'
+  location: location
+  parent: OnPremVM
+  dependsOn: [
+    createForwardDNSZone
+  ]
+  properties: {
+    source: {
+      script: 'Add-DnsServerResourceRecordA -Name "onpremhost" -ZoneName "labzone.local" -IPv4Address "10.13.37.10"'
+    }
+  }
+}
 resource SpokeVM 'Microsoft.Compute/virtualMachines@2023-09-01' = {
   name: 'SpokeVM'
   location: location
@@ -86,9 +130,9 @@ resource SpokeVM 'Microsoft.Compute/virtualMachines@2023-09-01' = {
     }
     storageProfile: {
       imageReference: {
-        publisher: 'MicrosoftWindowsDesktop'
-        offer: 'windows-11'
-        sku: 'win11-23h2-ent'
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2022-datacenter'
         version: 'latest'
       }
       osDisk: {
@@ -109,7 +153,12 @@ resource SpokeVM 'Microsoft.Compute/virtualMachines@2023-09-01' = {
           id: SpokeVMNic.id
         }
       ]
-    }    
+    }
+    diagnosticsProfile: {
+      bootDiagnostics: {
+        enabled: true
+      }
+    }     
   }
 }
 
