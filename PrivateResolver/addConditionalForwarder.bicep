@@ -1,8 +1,7 @@
 param location string
-param OnPremVMID string
 
 resource OnPremVM 'Microsoft.Compute/virtualMachines@2023-09-01' existing = {
-  name: OnPremVMID
+  name: 'OnPremVM'
 }
 
 resource createDNSConditionalForwarder 'Microsoft.Compute/virtualMachines/runCommands@2023-09-01' = {

@@ -104,7 +104,6 @@ module addConditionalForwarder 'addConditionalForwarder.bicep' = if (Stage == 'E
   name: 'addConditionalForwarder'
   params: {
     location: location
-    OnPremVMID: VMs.outputs.onPremVMID
   }
   dependsOn: [
     VMs

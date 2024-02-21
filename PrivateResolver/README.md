@@ -41,7 +41,7 @@ Then log on to both VMs and verify the following:
         Resolve-DnsName <storage account name>.file.core.windows.net
         ```
 If these tests produce the expected results, the environment is working as intended.   
-That means you can go ahead and add the Private Resolver manually.
+That means you can go ahead and add the Private Resolver manually. Alternatively, you can extend the environment by deploying the private resolver as well by following the next section.
 
 ## Lab environment with Private Resolver
 This will create the same environment as above, but with the private resolver and necessary links and endpoints in place.   
