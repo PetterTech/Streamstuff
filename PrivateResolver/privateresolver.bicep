@@ -41,8 +41,8 @@ resource outboundEndpoint 'Microsoft.Network/dnsResolvers/outboundEndpoints@2022
   }
 }
 
-resource LabzoneRuleset 'Microsoft.Network/dnsForwardingRulesets@2022-07-01' = {
-  name: 'LabzoneRuleset'
+resource labzoneRuleset 'Microsoft.Network/dnsForwardingRulesets@2022-07-01' = {
+  name: 'labzoneRuleset'
   location: location
   properties: {
     dnsResolverOutboundEndpoints: [
@@ -53,9 +53,9 @@ resource LabzoneRuleset 'Microsoft.Network/dnsForwardingRulesets@2022-07-01' = {
   }
 }
 
-resource LabzoneForwarding 'Microsoft.Network/dnsForwardingRulesets/forwardingRules@2022-07-01' = {
-  name: 'LabzoneForwarding'
-  parent: LabzoneRuleset
+resource labzoneForwarding 'Microsoft.Network/dnsForwardingRulesets/forwardingRules@2022-07-01' = {
+  name: 'labzoneForwarding'
+  parent: labzoneRuleset
   properties: {
     domainName: 'labzone.local.'
     targetDnsServers: [
@@ -64,5 +64,15 @@ resource LabzoneForwarding 'Microsoft.Network/dnsForwardingRulesets/forwardingRu
         port: 53
        }
     ]
+  }
+}
+
+resource rulesetVnetLink 'Microsoft.Network/dnsForwardingRulesets/virtualNetworkLinks@2022-07-01' = {
+  name: 'rulesetVnetLink'
+  parent: labzoneRuleset
+  properties: {
+    virtualNetwork: {
+      id: hubvnetID
+    }
   }
 }

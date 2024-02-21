@@ -36,6 +36,10 @@ module VMs './VMs.bicep' = {
     onpremsubnetID: onpremvnet.outputs.onpremsubnetID
     spokesubnetID: spokevnet.outputs.spokesubnetID
   }
+  dependsOn: [
+    spokevnet
+    onpremvnet
+  ]
 }
 
 module vnetpeering './vnetPeering.bicep' = {
@@ -45,6 +49,11 @@ module vnetpeering './vnetPeering.bicep' = {
     Spoke1ID: spokevnet.outputs.vnetID
     Spoke2ID: onpremvnet.outputs.vnetID
   }
+  dependsOn: [
+    hubvnet
+    spokevnet
+    onpremvnet
+  ]
 }
 
 module bastion 'bastion.bicep' = {
@@ -53,6 +62,9 @@ module bastion 'bastion.bicep' = {
     HubSubnetID: hubvnet.outputs.bastionSubnetID
     location: location
   }
+  dependsOn: [
+    hubvnet
+  ]
 }
 
 module storage 'storage.bicep' = {
@@ -64,6 +76,9 @@ module storage 'storage.bicep' = {
     spokeSubnetID: spokevnet.outputs.spokesubnetID
     storageAccountName: storageAccountName
   }
+  dependsOn: [
+    spokevnet
+  ]
 }
 
 module privateresolver 'privateresolver.bicep' = {
@@ -74,4 +89,7 @@ module privateresolver 'privateresolver.bicep' = {
     inboundSubnetID: hubvnet.outputs.inboundSubnetID
     outboundSubnetID: hubvnet.outputs.outboundSubnetID
   }
+  dependsOn: [
+    hubvnet
+  ]
 }
