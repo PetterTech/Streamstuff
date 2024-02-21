@@ -5,6 +5,12 @@ param localAdminUsername string = 'pettertech'
 @secure()
 param localAdminPassword string = 'LongAndStrongP@ssw0rd1234'
 param storageAccountName string = 'pt${uniqueString(resourceGroup().id)}'
+@allowed([
+  'FirstStage'
+  'EndStage'
+])
+@description('Select either FirstStage or EndStage, based on whether or not you want the complete setup with Private Resolver or not. See readme for more information.')
+param Stage string
 
 module hubvnet './hubvnet.bicep' = {
   name: 'hubvnet'
@@ -81,7 +87,7 @@ module storage 'storage.bicep' = {
   ]
 }
 
-module privateresolver 'privateresolver.bicep' = {
+module privateresolver 'privateresolver.bicep' = if (Stage == 'EndStage'){
   name: 'privateresolver'
   params: {
     location: location
@@ -91,5 +97,16 @@ module privateresolver 'privateresolver.bicep' = {
   }
   dependsOn: [
     hubvnet
+  ]
+}
+
+module addConditionalForwarder 'addConditionalForwarder.bicep' = if (Stage == 'EndStage') {
+  name: 'addConditionalForwarder'
+  params: {
+    location: location
+    OnPremVMID: VMs.outputs.onPremVMID
+  }
+  dependsOn: [
+    VMs
   ]
 }

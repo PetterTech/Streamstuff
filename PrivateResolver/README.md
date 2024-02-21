@@ -16,7 +16,7 @@ Diagram:
 ### Deployment
 Deploy the lab environment without private resolver by using the following command:
 ```powershell
-New-AzResourceGroupDeployment -Name "Test-01" -ResourceGroupName <resource group name> -TemplateFile .\PrivateResolver\main.bicep
+New-AzResourceGroupDeployment -Name "Test-01" -ResourceGroupName <resource group name> -TemplateFile .\PrivateResolver\main.bicep -Stage FirstStage
 ```
 
 ### Verifying functionality without Private Resolver
@@ -40,4 +40,40 @@ Then log on to both VMs and verify the following:
         ```powershell
         Resolve-DnsName <storage account name>.file.core.windows.net
         ```
-If these tests produce the expected results, the environment is working as intended.
+If these tests produce the expected results, the environment is working as intended.   
+That means you can go ahead and add the Private Resolver manually.
+
+## Lab environment with Private Resolver
+This will create the same environment as above, but with the private resolver and necessary links and endpoints in place.   
+Diagram:
+![Beatiful drawing](./Logical-EndStage.png)
+### Deployment
+Deploy the lab environment with private resolver by using the following command:
+```powershell
+New-AzResourceGroupDeployment -Name "Test-01" -ResourceGroupName <resource group name> -TemplateFile .\PrivateResolver\main.bicep -Stage EndStage
+```
+
+### Verifying functionality with Private Resolver
+First, grab the name of your deployed storage account.    
+Then log on to both VMs and verify the following:
+- From OnPremVM:
+    - Resolve local DNS zone (should work):
+        ```powershell
+        Resolve-DnsName onpremhost.labzone.local
+        ```
+    - Resolve Azure DNS zone (should point to private IP):
+        ```powershell
+        Resolve-DnsName <storage account name>.file.core.windows.net
+        ```
+- From spokeVM:
+    - Resolve local DNS zone (should work):
+        ```powershell
+        Resolve-DnsName onpremhost.labzone.local
+        ```
+    - Resolve Azure DNS zone (should point to private IP):
+        ```powershell
+        Resolve-DnsName <storage account name>.file.core.windows.net
+        ```
+
+## Troubleshooting
+From time to time the Bicep deployments will fail for various reasons. I find that usually you can just rerun the deployment and it will work. If it doesn't, you can try to remove the resource group and start over.
