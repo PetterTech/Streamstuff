@@ -76,3 +76,28 @@ resource rulesetVnetLink 'Microsoft.Network/dnsForwardingRulesets/virtualNetwork
     }
   }
 }
+
+resource spokevnet 'Microsoft.Network/virtualNetworks@2023-09-01' = {
+  name: 'Spoke'
+  location: location
+  properties: {
+    addressSpace: {
+      addressPrefixes: [
+        '10.201.0.0/24'
+      ]
+    }
+    subnets: [
+      {
+        name: 'default'
+        properties: {
+          addressPrefix: '10.201.0.0/26'
+        }
+      }
+    ]
+    dhcpOptions: {
+      dnsServers: [
+        '10.200.0.70'
+      ]
+    }
+  }
+}

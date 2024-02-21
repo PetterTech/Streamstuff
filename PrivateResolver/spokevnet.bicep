@@ -17,11 +17,6 @@ resource spokevnet 'Microsoft.Network/virtualNetworks@2023-09-01' = {
         }
       }
     ]
-    dhcpOptions: {
-      dnsServers: [
-        '10.200.0.70'
-      ]
-    }
   }
 }
 
